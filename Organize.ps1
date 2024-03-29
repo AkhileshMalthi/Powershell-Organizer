@@ -14,21 +14,65 @@ try {
     $organizationLog = @()
     $createdDirectories = @{}
 
+    # Define mappings for file extensions to folder names
+    $extensionMappings = @{
+        'docx'  = 'Microsoft Word Documents'
+        'xlsx'  = 'Microsoft Excel Spreadsheets'
+        'pptx'  = 'Microsoft PowerPoint Presentations'
+        'pdf'   = 'Adobe PDF Documents'
+        'txt'   = 'Text Files'
+        'jpg'   = 'JPEG Images'
+        'png'   = 'PNG Images'
+        'gif'   = 'GIF Images'
+        'mp3'   = 'MP3 Audio'
+        'mp4'   = 'MP4 Videos'
+        'zip'   = 'ZIP Archives'
+        'rar'   = 'RAR Archives'
+        '7z'    = '7-Zip Archives'
+        'exe'   = 'Executable Files'
+        'dll'   = 'Dynamic Link Libraries'
+        'ps1'   = 'PowerShell Scripts'
+        'bat'   = 'Batch Files'
+        'cmd'   = 'Command Scripts'
+        'py'    = 'Python Scripts'
+        'java'  = 'Java Source Code'
+        'cpp'   = 'C++ Source Code'
+        'cs'    = 'C# Source Code'
+        'html'  = 'HTML Documents'
+        'css'   = 'CSS Stylesheets'
+        'js'    = 'JavaScript Files'
+        'json'  = 'JSON Data'
+        'xml'   = 'XML Documents'
+        'csv'   = 'CSV Files'
+        'log'   = 'Log Files'
+        'bak'   = 'Backup Files'
+        'tmp'   = 'Temporary Files'
+        # Add more mappings as needed for other file types
+    }
+
     # Loop through each file
     foreach ($file in $files) {
         # Get the extension of the file and convert it to lowercase
         $extension = $file.Extension.TrimStart('.').ToLower()
 
+        # Check if there's a custom folder name for the extension
+        if ($extensionMappings.ContainsKey($extension)) {
+            $folderName = $extensionMappings[$extension]
+        } else {
+            # If no custom name is defined, use the extension as folder name
+            $folderName = $extension.ToUpper() + ' Files'
+        }
+
         # Create a directory for the extension if it doesn't exist
-        $extensionDirectory = Join-Path -Path $sourceDirectory -ChildPath $extension
+        $extensionDirectory = Join-Path -Path $sourceDirectory -ChildPath $folderName
         if (-not (Test-Path -Path $extensionDirectory -PathType Container)) {
-            New-Item -Path $extensionDirectory -ItemType Directory -ErrorAction Stop | Out-Null
+            New-Item -Path $extensionDirectory -ItemType Directory | Out-Null
             $createdDirectories[$extensionDirectory] = $true
         }
 
         # Move the file to the extension directory
         $destinationPath = Join-Path -Path $extensionDirectory -ChildPath $file.Name
-        Move-Item -Path $file.FullName -Destination $destinationPath -Force -ErrorAction Stop
+        Move-Item -Path $file.FullName -Destination $destinationPath -Force
 
         # Add log entry for organization
         $organizationLogEntry = @{
@@ -51,13 +95,13 @@ try {
         foreach ($logEntry in $organizationLog) {
             $sourcePath = Join-Path -Path $logEntry.DestinationDirectory -ChildPath $logEntry.FileName
             $destinationPath = Join-Path -Path $logEntry.SourceDirectory -ChildPath $logEntry.FileName
-            Move-Item -Path $sourcePath -Destination $destinationPath -Force -ErrorAction Stop
+            Move-Item -Path $sourcePath -Destination $destinationPath -Force -ErrorAction SilentlyContinue
         }
         
         # Remove empty directories created during organization
         foreach ($directory in $createdDirectories.Keys) {
             if ((Get-ChildItem -Path $directory | Measure-Object).Count -eq 0) {
-                Remove-Item -Path $directory -Force -Recurse -ErrorAction Stop
+                Remove-Item -Path $directory -Force -Recurse -ErrorAction SilentlyContinue
             }
         }
         
