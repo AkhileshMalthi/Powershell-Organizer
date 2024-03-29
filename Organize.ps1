@@ -80,4 +80,5 @@ try {
 finally {
     # Stop transcript logging
     Stop-Transcript
+    Write-Host "`n" -NoNewline
 }
