@@ -1,3 +1,8 @@
+# Start transcript logging
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$transcriptPath = "C:\PS_Organizer_Logs\organizer_log_$timestamp.txt"
+Start-Transcript -Path $transcriptPath -Append
+
 try {
     # Get the current directory
     $sourceDirectory = Get-Location
@@ -71,4 +76,8 @@ try {
     Write-Host $_.Exception.ItemName -ForegroundColor Yellow
     Write-Host "Position Message:`t" -NoNewline -ForegroundColor Red
     Write-Host $_.InvocationInfo.PositionMessage -ForegroundColor Yellow
+}
+finally {
+    # Stop transcript logging
+    Stop-Transcript
 }
