@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass -File "D:\Projects\Powershell_File_Organizer\Organize.ps1"
