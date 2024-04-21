@@ -19,7 +19,7 @@ try {
         'docx'  = 'Microsoft Word Documents'
         'xlsx'  = 'Microsoft Excel Spreadsheets'
         'pptx'  = 'Microsoft PowerPoint Presentations'
-        'pdf'   = 'Adobe PDF Documents'
+        'pdf'   = 'PDF Documents'
         'txt'   = 'Text Files'
         'jpg'   = 'JPEG Images'
         'png'   = 'PNG Images'
