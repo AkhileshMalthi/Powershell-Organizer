@@ -1,6 +1,6 @@
 # Start transcript logging
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$transcriptPath = "C:\PS_Organizer_Logs\organizer_log_$timestamp.txt"
+$transcriptPath = "D:\PS_Organizer_Logs\organizer_log_$timestamp.txt"
 Start-Transcript -Path $transcriptPath -Append
 
 try {
